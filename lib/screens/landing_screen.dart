@@ -7,7 +7,7 @@ class LandingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      endDrawer: Sidebar(), // This will make the drawer appear from the right
+      endDrawer: Sidebar(),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -65,7 +65,7 @@ class LandingPage extends StatelessWidget {
                       builder: (context) => IconButton(
                         icon: Icon(Icons.menu),
                         onPressed: () {
-                          Scaffold.of(context).openEndDrawer(); // This opens the drawer from the right
+                          Scaffold.of(context).openEndDrawer();
                         },
                       ),
                     ),

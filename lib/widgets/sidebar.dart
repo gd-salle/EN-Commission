@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../routes/app_routes.dart';
+import '../widgets/logout_confirmation_dialog.dart';
 
 class Sidebar extends StatelessWidget {
   @override
@@ -20,7 +22,7 @@ class Sidebar extends StatelessWidget {
               style: TextStyle(fontSize: 18, color: Colors.black),
             ),
             onTap: () {
-              // Handle onTap
+              Navigator.pushNamed(context, AppRoutes.landingPage);
             },
           ),
           Divider(thickness: 1),
@@ -31,7 +33,7 @@ class Sidebar extends StatelessWidget {
               style: TextStyle(fontSize: 18, color: Colors.black),
             ),
             onTap: () {
-              // Handle onTap
+              Navigator.pushNamed(context, AppRoutes.materialMonitoringPage);
             },
           ),
           Divider(thickness: 1),
@@ -65,7 +67,7 @@ class Sidebar extends StatelessWidget {
               style: TextStyle(fontSize: 18),
             ),
             onTap: () {
-              // Handle onTap
+              Navigator.pushNamed(context, AppRoutes.aboutPage);
             },
           ),
           Divider(thickness: 1),
@@ -76,13 +78,21 @@ class Sidebar extends StatelessWidget {
               style: TextStyle(fontSize: 18, color: Colors.black),
             ),
             onTap: () {
-              // Handle onTap
+              _showLogoutConfirmationDialog(context);
             },
           ),
           Divider(thickness: 1),
-
         ],
       ),
+    );
+  }
+
+  void _showLogoutConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return LogoutConfirmationDialog();
+      },
     );
   }
 }

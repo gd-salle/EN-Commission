@@ -12,8 +12,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'UNC Property Management',
       theme: AppTheme.lightTheme,
-      initialRoute: AppRoutes.landingPage,
+      initialRoute: AppRoutes.loginPage,
       routes: AppRoutes.routes,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

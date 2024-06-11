@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 
 class AccountTypeDropdown extends StatelessWidget {
+  final String? initialValue;
+  final ValueChanged<String?>? onChanged;
+
+  const AccountTypeDropdown({Key? key, this.initialValue, this.onChanged}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
+      value: initialValue,
+      onChanged: onChanged,
       decoration: InputDecoration(
         labelText: 'Account Type:',
         border: OutlineInputBorder(),
@@ -16,9 +23,6 @@ class AccountTypeDropdown extends StatelessWidget {
           child: Text(value),
         );
       }).toList(),
-      onChanged: (String? newValue) {
-        // Process
-      },
     );
   }
 }
