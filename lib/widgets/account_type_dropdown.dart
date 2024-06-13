@@ -1,28 +1,68 @@
+// lib/widgets/account_type_dropdown.dart
 import 'package:flutter/material.dart';
+import '../models/account_type.dart';
+import '../services/registration_api_service.dart';
 
-class AccountTypeDropdown extends StatelessWidget {
+class AccountTypeDropdown extends StatefulWidget {
   final String? initialValue;
   final ValueChanged<String?>? onChanged;
+  final List<AccountType> accountTypes; // Define accountTypes here
 
-  const AccountTypeDropdown({Key? key, this.initialValue, this.onChanged}) : super(key: key);
+  const AccountTypeDropdown({
+    Key? key,
+    required this.initialValue,
+    required this.onChanged,
+    required this.accountTypes, // Include accountTypes in the constructor
+  }) : super(key: key);
+
+  @override
+  _AccountTypeDropdownState createState() => _AccountTypeDropdownState();
+}
+
+class _AccountTypeDropdownState extends State<AccountTypeDropdown> {
+  List<AccountType> _accountTypes = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAccountTypes();
+  }
+
+  Future<void> _fetchAccountTypes() async {
+    try {
+      List<AccountType> accountTypes = await RegistrationApiService.fetchAccountTypes();
+      setState(() {
+        _accountTypes = accountTypes;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Failed to fetch account types: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<String>(
-      value: initialValue,
-      onChanged: onChanged,
-      decoration: InputDecoration(
-        labelText: 'Account Type:',
-        border: OutlineInputBorder(),
-        filled: true,
-        fillColor: Colors.grey[200],
-      ),
-      items: <String>['Student', 'Teacher', 'Admin'].map((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-    );
+    return _isLoading
+        ? CircularProgressIndicator()
+        : DropdownButtonFormField<String>(
+            value: widget.initialValue,
+            onChanged: widget.onChanged,
+            decoration: InputDecoration(
+              labelText: 'Account Type:',
+              border: OutlineInputBorder(),
+              filled: true,
+              fillColor: Colors.grey[200],
+            ),
+            items: _accountTypes.map((AccountType accountType) {
+              return DropdownMenuItem<String>(
+                value: accountType.name,
+                child: Text(accountType.name),
+              );
+            }).toList(),
+          );
   }
 }

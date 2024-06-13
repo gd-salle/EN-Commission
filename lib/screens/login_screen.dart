@@ -1,8 +1,12 @@
+// lib/screens/login_screen.dart
 import 'package:flutter/material.dart';
 import '../widgets/account_type_dropdown.dart';
 import '../widgets/top_design.dart';
 import '../widgets/bottom_design.dart';
 import '../routes/app_routes.dart';
+import '../models/account_type.dart';
+import '../services/registration_api_service.dart';
+import '../services/login_api_service.dart'; // Import the LoginApiService
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -14,6 +18,68 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _username;
   String? _password;
   String? _selectedAccountType;
+  List<AccountType> _accountTypes = [];
+  
+  @override
+  void initState() {
+    super.initState();
+    _fetchAccountTypes();
+  }
+
+  Future<void> _fetchAccountTypes() async {
+    try {
+      List<AccountType> accountTypes = await RegistrationApiService.fetchAccountTypes();
+      setState(() {
+        _accountTypes = accountTypes;
+      });
+    } catch (e) {
+      print('Failed to fetch account types: $e');
+    }
+  }
+
+  // lib/screens/login_screen.dart
+
+void _loginUser() async {
+  if (_formKey.currentState!.validate()) {
+    _formKey.currentState!.save();
+    try {
+      int accountTypeId = _accountTypes.firstWhere((type) => type.name == _selectedAccountType).id;
+      bool success = await LoginApiService.loginUser(
+        _username!, 
+        _password!, 
+        accountTypeId
+      );
+      if (success) {
+        Navigator.pushNamed(context, AppRoutes.landingPage);
+      } else {
+        _showErrorDialog('Invalid username, password, or account type');
+      }
+    } catch (e) {
+      _showErrorDialog('Failed to login. Please try again.');
+    }
+  }
+}
+
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             _selectedAccountType = value;
                           });
                         },
+                        accountTypes: _accountTypes, // Pass accountTypes here
                       ),
                       SizedBox(height: 10),
                       TextFormField(
@@ -80,14 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       SizedBox(height: 20),
                       ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            _formKey.currentState!.save();
-                            // Now you can use _username and _password
-                            Navigator.pushNamed(
-                                context, AppRoutes.landingPage);
-                          }
-                        },
+                        onPressed: _loginUser, // Call _loginUser on press
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
                           padding: EdgeInsets.symmetric(
