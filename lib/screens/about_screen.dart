@@ -80,9 +80,9 @@ class AboutPage extends StatelessWidget {
                   SizedBox(height: 20),
                   _buildRow(
                     [
-                      _buildIcon(Icons.person, 'Office Assistant'),
-                      _buildIcon(Icons.person, 'Staff'),
-                      _buildIcon(Icons.person, 'Student Assistant'),
+                      _buildIcon(Icons.person, 'Inventory Analyst'),
+                      _buildIcon(Icons.person, 'Property Associate'),
+                      _buildIcon(Icons.person, 'Assistant'),
                     ],
                   ),
                 ],

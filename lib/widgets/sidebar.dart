@@ -44,7 +44,7 @@ class Sidebar extends StatelessWidget {
               style: TextStyle(fontSize: 18),
             ),
             onTap: () {
-              // Handle onTap
+              Navigator.pushNamed(context, AppRoutes.materialTransferSlipPage);
             },
           ),
           Divider(thickness: 1),
@@ -55,10 +55,10 @@ class Sidebar extends StatelessWidget {
               style: TextStyle(fontSize: 18),
             ),
             onTap: () {
-              // Handle onTap
+              Navigator.pushNamed(context, AppRoutes.requisition_form_screen);
             },
           ),
-          Spacer(),
+
           Divider(thickness: 1),
           ListTile(
             leading: Icon(Icons.info_outline),
