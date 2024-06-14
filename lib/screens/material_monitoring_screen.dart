@@ -1,13 +1,27 @@
 import 'package:flutter/material.dart';
+import '../services/material_sheet_api_service.dart';
+import '../models/material_sheet.dart';
 import '../routes/app_routes.dart';
 import '../widgets/bottom_design.dart';
 import '../widgets/top_design.dart';
 
-class MaterialMonitoringScreen extends StatelessWidget {
+class MaterialMonitoringScreen extends StatefulWidget {
+  @override
+  _MaterialMonitoringScreenState createState() => _MaterialMonitoringScreenState();
+}
+
+class _MaterialMonitoringScreenState extends State<MaterialMonitoringScreen> {
+  late Future<List<MaterialSheet>> futureMaterialSheets;
+
+  @override
+  void initState() {
+    super.initState();
+    futureMaterialSheets = MaterialSheetApiService.fetchMaterialSheets();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // endDrawer: Sidebar(),
       body: SafeArea(
         child: Column(
           children: [
@@ -57,67 +71,82 @@ class MaterialMonitoringScreen extends StatelessWidget {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Table(
-                  border: TableBorder(
-                    horizontalInside: BorderSide(width: 1, color: Colors.grey), // Only horizontal lines
-                    bottom: BorderSide(width: 1, color: Colors.grey), // Bottom line
-                  ),
-                  columnWidths: {
-                    0: FlexColumnWidth(1),
-                    1: FlexColumnWidth(1.5),
-                    2: FlexColumnWidth(1.5),
-                    3: FlexColumnWidth(1),
-                  },
-                  children: [
-                    TableRow(
+                child: FutureBuilder<List<MaterialSheet>>(
+                  future: futureMaterialSheets,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(child: Text('No material sheets found.'));
+                    }
+
+                    final materialSheets = snapshot.data!;
+
+                    return Table(
+                      border: TableBorder(
+                        horizontalInside: BorderSide(width: 1, color: Colors.grey), // Only horizontal lines
+                        bottom: BorderSide(width: 1, color: Colors.grey), // Bottom line
+                      ),
+                      columnWidths: {
+                        0: FlexColumnWidth(1),
+                        1: FlexColumnWidth(1.5),
+                        2: FlexColumnWidth(1.5),
+                        3: FlexColumnWidth(1),
+                      },
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Date', style: TextStyle(fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Department', style: TextStyle(fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Laboratory', style: TextStyle(fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Action', style: TextStyle(fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
-                        ),
-                      ],
-                    ),
-                    ...List.generate(3, (index) => TableRow(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('06/11/24', style: TextStyle(),textAlign: TextAlign.center,),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('College of Computer Studies', style: TextStyle(),textAlign: TextAlign.center,),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('JH28', style: TextStyle(),textAlign: TextAlign.center,),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                            child: IconButton(
-                              onPressed: () {
-                                // Handle view icon press
-                              },
-                              icon: Icon(Icons.visibility),
-                              padding: EdgeInsets.zero,
+                        TableRow(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('Date', style: TextStyle(fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
                             ),
-                          ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('Department', style: TextStyle(fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('Laboratory', style: TextStyle(fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('Action', style: TextStyle(fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
+                            ),
+                          ],
                         ),
+                        ...materialSheets.map((materialSheet) => TableRow(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(materialSheet.date, style: TextStyle(),textAlign: TextAlign.center,),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(materialSheet.department, style: TextStyle(),textAlign: TextAlign.center,),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(materialSheet.laboratory, style: TextStyle(),textAlign: TextAlign.center,),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: IconButton(
+                                  onPressed: () {
+                                    // Handle view icon press
+                                  },
+                                  icon: Icon(Icons.visibility),
+                                  padding: EdgeInsets.zero,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )).toList(),
                       ],
-                    )),
-                  ],
+                    );
+                  },
                 ),
               ),
             ),
@@ -126,40 +155,37 @@ class MaterialMonitoringScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                      SizedBox(
-                        width: 120,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, AppRoutes.materialAddPage);
-
-                          },
-                          child: Text('Add',style: TextStyle(color: Colors.white),),
-                          
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            
-                          ),
+                  SizedBox(
+                    width: 120,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, AppRoutes.materialAddPage);
+                      },
+                      child: Text('Add',style: TextStyle(color: Colors.white),),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
                         ),
                       ),
+                    ),
+                  ),
                   SizedBox(width: 10),
-                    SizedBox(
-                        width: 120,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text('Cancel',style: TextStyle(color: Colors.white),),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
+                  SizedBox(
+                    width: 120,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('Cancel',style: TextStyle(color: Colors.white),),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
                         ),
                       ),
+                    ),
+                  ),
                 ],
               ),
             ),

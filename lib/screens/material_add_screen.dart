@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../widgets/top_design.dart';
 import '../widgets/bottom_design.dart';
 import '../widgets/date_picker.dart';
+import '../models/material_sheet.dart';
+import '../services/material_sheet_api_service.dart';
 
 class MaterialAddScreen extends StatefulWidget {
   @override
@@ -12,10 +14,79 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
   String _selectedDate = '';
   String _selectedAcquisitionDate = '';
 
+  final TextEditingController _departmentController = TextEditingController();
+  final TextEditingController _laboratoryController = TextEditingController();
+  final TextEditingController _accountablePersonController = TextEditingController();
+  final TextEditingController _qtyController = TextEditingController();
+  final TextEditingController _unitController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _poNumberController = TextEditingController();
+  final TextEditingController _accountCodeController = TextEditingController();
+  final TextEditingController _accountNameController = TextEditingController();
+  final TextEditingController _tagNumberController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _unitPriceController = TextEditingController();
+  final TextEditingController _totalController = TextEditingController();
+  final TextEditingController _remarksController = TextEditingController();
+  final TextEditingController _mrNumberController = TextEditingController();
+
+  @override
+  void dispose() {
+    _departmentController.dispose();
+    _laboratoryController.dispose();
+    _accountablePersonController.dispose();
+    _qtyController.dispose();
+    _unitController.dispose();
+    _descriptionController.dispose();
+    _poNumberController.dispose();
+    _accountCodeController.dispose();
+    _accountNameController.dispose();
+    _tagNumberController.dispose();
+    _locationController.dispose();
+    _unitPriceController.dispose();
+    _totalController.dispose();
+    _remarksController.dispose();
+    _mrNumberController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _addMaterialSheet() async {
+    final materialSheet = MaterialSheet(
+      department: _departmentController.text,
+      laboratory: _laboratoryController.text,
+      date: _selectedDate,
+      accountablePerson: _accountablePersonController.text,
+      qty: int.tryParse(_qtyController.text) ?? 0,
+      unit: _unitController.text,
+      description: _descriptionController.text,
+      poNumber: _poNumberController.text,
+      accountCode: _accountCodeController.text,
+      accountName: _accountNameController.text,
+      tagNumber: _tagNumberController.text,
+      acquisitionDate: _selectedAcquisitionDate,
+      location: _locationController.text,
+      unitPrice: double.tryParse(_unitPriceController.text) ?? 0.0,
+      total: double.tryParse(_totalController.text) ?? 0.0,
+      remarks: _remarksController.text,
+      mrNumber: _mrNumberController.text,
+    );
+
+    try {
+      bool success = await MaterialSheetApiService.addMaterialSheet(materialSheet);
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Material sheet added successfully')));
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add material sheet')));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    String currentDate = DateTime.now().toString().substring(0,10);
+    String currentDate = DateTime.now().toString().substring(0, 10);
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -53,48 +124,40 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
             ),
             SizedBox(height: 10),
             Container(
-                color: Colors.grey[300],
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Material Monitoring Sheet Add',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+              color: Colors.grey[300],
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Material Monitoring Sheet Add',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              SizedBox(height: 10),
+            ),
+            SizedBox(height: 10),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: ListView(
                   children: [
-                    DropdownButtonFormField<String>(
-                      items: [
-                        DropdownMenuItem<String>(
-                          value: 'Department 1',
-                          child: Text('Department 1'),
-                        ),
-                        DropdownMenuItem<String>(
-                          value: 'Department 2',
-                          child: Text('Department 2'),
-                        ),
-                        DropdownMenuItem<String>(
-                          value: 'Department 3',
-                          child: Text('Department 3'),
-                        ),
-                        // Add more departments as needed
-                      ],
-                      onChanged: (String? value) {
-                        // Handle department selection
-                      },
+                    TextField(
+                      controller: _departmentController,
                       decoration: InputDecoration(
                         hintText: 'Department',
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    TextField(
+                      controller: _laboratoryController,
+                      decoration: InputDecoration(
+                        hintText: 'Laboratory',
                         filled: true,
                         fillColor: Colors.grey[200],
                       ),
@@ -110,6 +173,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     ),
                     SizedBox(height: 8),
                     TextField(
+                      controller: _accountablePersonController,
                       decoration: InputDecoration(
                         hintText: 'Accountable Person',
                         filled: true,
@@ -121,6 +185,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                       children: [
                         Expanded(
                           child: TextField(
+                            controller: _qtyController,
                             decoration: InputDecoration(
                               hintText: 'QTY',
                               filled: true,
@@ -131,6 +196,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                         SizedBox(width: 8),
                         Expanded(
                           child: TextField(
+                            controller: _unitController,
                             decoration: InputDecoration(
                               hintText: 'UNIT',
                               filled: true,
@@ -142,6 +208,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     ),
                     SizedBox(height: 8),
                     TextField(
+                      controller: _descriptionController,
                       decoration: InputDecoration(
                         hintText: 'Description',
                         filled: true,
@@ -150,6 +217,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     ),
                     SizedBox(height: 8),
                     TextField(
+                      controller: _poNumberController,
                       decoration: InputDecoration(
                         hintText: 'P.O Number',
                         filled: true,
@@ -158,6 +226,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     ),
                     SizedBox(height: 8),
                     TextField(
+                      controller: _accountCodeController,
                       decoration: InputDecoration(
                         hintText: 'Account Code',
                         filled: true,
@@ -166,6 +235,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     ),
                     SizedBox(height: 8),
                     TextField(
+                      controller: _accountNameController,
                       decoration: InputDecoration(
                         hintText: 'Account Name',
                         filled: true,
@@ -174,6 +244,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     ),
                     SizedBox(height: 8),
                     TextField(
+                      controller: _tagNumberController,
                       decoration: InputDecoration(
                         hintText: 'Tag Number',
                         filled: true,
@@ -191,6 +262,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     ),
                     SizedBox(height: 8),
                     TextField(
+                      controller: _locationController,
                       decoration: InputDecoration(
                         hintText: 'Location',
                         filled: true,
@@ -199,6 +271,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     ),
                     SizedBox(height: 8),
                     TextField(
+                      controller: _unitPriceController,
                       decoration: InputDecoration(
                         hintText: 'Unit Price',
                         filled: true,
@@ -207,6 +280,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     ),
                     SizedBox(height: 8),
                     TextField(
+                      controller: _totalController,
                       decoration: InputDecoration(
                         hintText: 'Total',
                         filled: true,
@@ -215,6 +289,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     ),
                     SizedBox(height: 8),
                     TextField(
+                      controller: _remarksController,
                       decoration: InputDecoration(
                         hintText: 'Remarks',
                         filled: true,
@@ -223,6 +298,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     ),
                     SizedBox(height: 8),
                     TextField(
+                      controller: _mrNumberController,
                       decoration: InputDecoration(
                         hintText: 'MR#',
                         filled: true,
@@ -238,39 +314,35 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                      SizedBox(
-                        width: 120,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            // Handle Add button press
-                          },
-                          child: Text('Add',style: TextStyle(color: Colors.white),),
-                          
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            
-                          ),
+                  SizedBox(
+                    width: 120,
+                    child: ElevatedButton(
+                      onPressed: _addMaterialSheet,
+                      child: Text('Add', style: TextStyle(color: Colors.white)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
                         ),
                       ),
+                    ),
+                  ),
                   SizedBox(width: 10),
-                    SizedBox(
-                        width: 120,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text('Cancel',style: TextStyle(color: Colors.white),),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
+                  SizedBox(
+                    width: 120,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('Cancel', style: TextStyle(color: Colors.white)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
                         ),
                       ),
+                    ),
+                  ),
                 ],
               ),
             ),

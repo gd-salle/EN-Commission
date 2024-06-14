@@ -36,30 +36,26 @@ class _LoginScreenState extends State<LoginScreen> {
       print('Failed to fetch account types: $e');
     }
   }
-
-  // lib/screens/login_screen.dart
-
-void _loginUser() async {
-  if (_formKey.currentState!.validate()) {
-    _formKey.currentState!.save();
-    try {
-      int accountTypeId = _accountTypes.firstWhere((type) => type.name == _selectedAccountType).id;
-      bool success = await LoginApiService.loginUser(
-        _username!, 
-        _password!, 
-        accountTypeId
-      );
-      if (success) {
-        Navigator.pushNamed(context, AppRoutes.landingPage);
-      } else {
-        _showErrorDialog('Invalid username, password, or account type');
+  void _loginUser() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      try {
+        int accountTypeId = _accountTypes.firstWhere((type) => type.name == _selectedAccountType).id;
+        bool success = await LoginApiService.loginUser(
+          _username!, 
+          _password!, 
+          accountTypeId
+        );
+        if (success) {
+          Navigator.pushNamed(context, AppRoutes.landingPage);
+        } else {
+          _showErrorDialog('Invalid username, password, or account type');
+        }
+      } catch (e) {
+        _showErrorDialog('Failed to login. Please try again.');
       }
-    } catch (e) {
-      _showErrorDialog('Failed to login. Please try again.');
     }
   }
-}
-
 
   void _showErrorDialog(String message) {
     showDialog(
