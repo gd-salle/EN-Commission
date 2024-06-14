@@ -48,7 +48,15 @@ class _MaterialMonitoringScreenState extends State<MaterialMonitoringScreen> {
                       Text(
                         'Material Monitoring Sheet',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Text(
+                        'Property Management Office',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w300,
                         ),
                       ),
                     ],

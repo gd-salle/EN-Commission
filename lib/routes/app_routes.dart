@@ -9,6 +9,7 @@ import '../screens/material_transfer_slip_form_screen.dart';
 import '../screens/material_transfer_slip_receipt_screen.dart';
 import '../screens/requisition_form_screen.dart';
 import '../screens/requisition_receipt_screen.dart';
+import '../models/material_transfer_slip.dart';
 
 class AppRoutes {
   static const String loginPage = '/login';
@@ -18,9 +19,24 @@ class AppRoutes {
   static const String materialMonitoringPage = '/material_monitoring';
   static const String materialAddPage = '/material_add';
   static const String materialTransferSlipPage = '/material-transfer-slip-form';
-  static const String materialTransferSlipReceiptPage = '/material-transfer-slip-receipt';
-  static const String requisition_form_screen = '/requisition_form';
-  static const String requisition_receipt_screen = '/requisition_receipt';
+  static const String requisitionFormScreen = '/requisition_form';
+  static const String requisitionReceiptScreen = '/requisition_receipt';
+
+  static const String materialTransferSlipForm = '/material-transfer-slip-form';
+  static const String materialTransferSlipReceipt = '/material-transfer-slip-receipt';
+  
+    static Route<dynamic> generateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case materialTransferSlipForm:
+        return MaterialPageRoute(builder: (_) => MaterialTransferSlipFormScreen());
+      case materialTransferSlipReceipt:
+        final slip = settings.arguments as MaterialTransferSlip;
+        return MaterialPageRoute(builder: (_) => MaterialTransferSlipReceiptScreen(slip: slip));
+      default:
+        return MaterialPageRoute(builder: (_) => MaterialTransferSlipFormScreen());
+    }
+  }
+  
   static final routes = <String, WidgetBuilder>{
     loginPage: (context) => LoginScreen(),
     registrationPage: (context) => RegistrationScreen(),
@@ -29,9 +45,9 @@ class AppRoutes {
     materialMonitoringPage: (context) => MaterialMonitoringScreen(),
     materialAddPage: (context) => MaterialAddScreen(),
     materialTransferSlipPage: (context) => MaterialTransferSlipFormScreen(),
-    materialTransferSlipReceiptPage: (context) => MaterialTransferSlipReceiptScreen(),
-    requisition_form_screen:(context) => RequisitionFormScreen(),
-    requisition_receipt_screen:(context) => RequisitionReceiptScreen(),
-
+    requisitionFormScreen:(context) => RequisitionFormScreen(),
+    requisitionReceiptScreen:(context) => RequisitionReceiptScreen(),
   };
+
+
 }

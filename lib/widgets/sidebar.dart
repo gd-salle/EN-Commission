@@ -55,7 +55,7 @@ class Sidebar extends StatelessWidget {
               style: TextStyle(fontSize: 18),
             ),
             onTap: () {
-              Navigator.pushNamed(context, AppRoutes.requisition_form_screen);
+              Navigator.pushNamed(context, AppRoutes.requisitionFormScreen);
             },
           ),
 

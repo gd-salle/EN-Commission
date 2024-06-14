@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
       title: 'UNC Property Management',
       theme: AppTheme.lightTheme,
       initialRoute: AppRoutes.loginPage,
+      onGenerateRoute: AppRoutes.generateRoute,
       routes: AppRoutes.routes,
       debugShowCheckedModeBanner: false,
     );

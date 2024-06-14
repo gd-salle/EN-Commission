@@ -198,7 +198,7 @@ class RequisitionFormScreen extends StatelessWidget {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, AppRoutes.requisition_receipt_screen);
+                            Navigator.pushNamed(context, AppRoutes.requisitionReceiptScreen);
 
                           },
                           child: Text('Print'),

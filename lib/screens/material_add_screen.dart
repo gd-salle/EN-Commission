@@ -4,15 +4,15 @@ import '../widgets/bottom_design.dart';
 import '../widgets/date_picker.dart';
 import '../models/material_sheet.dart';
 import '../services/material_sheet_api_service.dart';
-
+import '../routes/app_routes.dart';
 class MaterialAddScreen extends StatefulWidget {
   @override
   _MaterialAddScreenState createState() => _MaterialAddScreenState();
 }
 
 class _MaterialAddScreenState extends State<MaterialAddScreen> {
-  String _selectedDate = '';
-  String _selectedAcquisitionDate = '';
+  DateTime _selectedDate = DateTime.now();
+  DateTime _selectedAcquisitionDate = DateTime.now();
 
   final TextEditingController _departmentController = TextEditingController();
   final TextEditingController _laboratoryController = TextEditingController();
@@ -51,42 +51,42 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
   }
 
   Future<void> _addMaterialSheet() async {
-    final materialSheet = MaterialSheet(
-      department: _departmentController.text,
-      laboratory: _laboratoryController.text,
-      date: _selectedDate,
-      accountablePerson: _accountablePersonController.text,
-      qty: int.tryParse(_qtyController.text) ?? 0,
-      unit: _unitController.text,
-      description: _descriptionController.text,
-      poNumber: _poNumberController.text,
-      accountCode: _accountCodeController.text,
-      accountName: _accountNameController.text,
-      tagNumber: _tagNumberController.text,
-      acquisitionDate: _selectedAcquisitionDate,
-      location: _locationController.text,
-      unitPrice: double.tryParse(_unitPriceController.text) ?? 0.0,
-      total: double.tryParse(_totalController.text) ?? 0.0,
-      remarks: _remarksController.text,
-      mrNumber: _mrNumberController.text,
-    );
-
-    try {
-      bool success = await MaterialSheetApiService.addMaterialSheet(materialSheet);
-      if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Material sheet added successfully')));
-        Navigator.pop(context);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add material sheet')));
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+  final materialSheet = MaterialSheet(
+    department: _departmentController.text,
+    laboratory: _laboratoryController.text,
+    date: _selectedDate.toIso8601String(),
+    accountablePerson: _accountablePersonController.text,
+    qty: int.tryParse(_qtyController.text) ?? 0,
+    unit: _unitController.text,
+    description: _descriptionController.text,
+    poNumber: _poNumberController.text,
+    accountCode: _accountCodeController.text,
+    accountName: _accountNameController.text,
+    tagNumber: _tagNumberController.text,
+    acquisitionDate: _selectedAcquisitionDate.toIso8601String(),
+    location: _locationController.text,
+    unitPrice: double.tryParse(_unitPriceController.text) ?? 0.0,
+    total: double.tryParse(_totalController.text) ?? 0.0,
+    remarks: _remarksController.text,
+    mrNumber: _mrNumberController.text,
+  );
+  
+  try {
+    bool success = await MaterialSheetApiService.addMaterialSheet(materialSheet);
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Material sheet added successfully')));
+      Navigator.pushNamedAndRemoveUntil(context, AppRoutes.materialMonitoringPage, (route) => false);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add material sheet')));
     }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
-    String currentDate = DateTime.now().toString().substring(0, 10);
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -114,7 +114,15 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                       Text(
                         'Material Monitoring Sheet',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Text(
+                        'Property Management Office',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w300,
                         ),
                       ),
                     ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DatePickerField extends StatefulWidget {
-  final ValueChanged<String> onChanged;
+  final ValueChanged<DateTime> onChanged;
   final String placeholder;
 
   const DatePickerField({Key? key, required this.onChanged, required this.placeholder}) : super(key: key);
@@ -11,7 +11,8 @@ class DatePickerField extends StatefulWidget {
 }
 
 class _DatePickerFieldState extends State<DatePickerField> {
-  String _selectedDate = '';
+  String _selectedDateText = '';
+  DateTime? _selectedDate;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -21,10 +22,11 @@ class _DatePickerFieldState extends State<DatePickerField> {
       lastDate: DateTime(2101),
     );
 
-    if (pickedDate != null && pickedDate != DateTime.now()) {
+    if (pickedDate != null) {
       setState(() {
-        _selectedDate = pickedDate.toString().substring(0, 10);
-        widget.onChanged(_selectedDate); // Call onChanged with selected date
+        _selectedDate = pickedDate;
+        _selectedDateText = _selectedDate.toString().substring(0, 10);
+        widget.onChanged(_selectedDate!); // Call onChanged with the selected DateTime
       });
     }
   }
@@ -40,7 +42,7 @@ class _DatePickerFieldState extends State<DatePickerField> {
         fillColor: Colors.grey[200],
         suffixIcon: Icon(Icons.calendar_today), // Calendar icon
       ),
-      controller: TextEditingController(text: _selectedDate),
+      controller: TextEditingController(text: _selectedDateText),
     );
   }
 }
