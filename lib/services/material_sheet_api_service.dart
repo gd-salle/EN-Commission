@@ -51,4 +51,22 @@ class MaterialSheetApiService {
       throw Exception('Failed to update material sheet');
     }
   }
+
+  // Delete an existing material sheet
+  static Future<bool> deleteMaterialSheet(int id) async {
+    print('Deleting material sheet with ID: $id');
+    final response = await http.delete(
+      Uri.parse('$apiUrl/material_sheet.php'), // Adjust the URL endpoint
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'id': id}), // Send the ID in the request body
+    );
+
+    if (response.statusCode == 200) {
+      final responseBody = json.decode(response.body);
+      return responseBody['success'];
+    } else {
+      throw Exception('Failed to delete material sheet');
+    }
+  }
+
 }

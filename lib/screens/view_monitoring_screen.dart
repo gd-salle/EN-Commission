@@ -3,7 +3,7 @@ import '../models/material_sheet.dart';
 import '../services/material_sheet_api_service.dart';
 import '../widgets/bottom_design.dart';
 import '../widgets/top_design.dart';
-
+import '../routes/app_routes.dart';
 class ViewMonitoringScreen extends StatefulWidget {
   final MaterialSheet materialSheet;
 
@@ -24,14 +24,88 @@ class _ViewMonitoringScreenState extends State<ViewMonitoringScreen> {
     _materialSheet = widget.materialSheet;
   }
 
+  Future<void> _deleteMaterialSheet() async {
+    try {
+      bool success = await MaterialSheetApiService.deleteMaterialSheet(_materialSheet.id!);
+      if (success) {
+        // Show success dialog and redirect after 1 second
+        showDialog(
+          context: context,
+          barrierDismissible: false, // Prevent dialog from closing on outside tap
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Deletion Successful'),
+              content: Text('Successfully deleted. You are now being redirected to the previous screen...'),
+            );
+          },
+        );
+
+        // Delay for 1 second
+        await Future.delayed(Duration(seconds: 1));
+
+        Navigator.pop(context); // Close the dialog
+        Navigator.pushNamed(context, AppRoutes.materialMonitoringPage); // Navigate to previous screen
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to delete material sheet')));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+  
+  void _showDeleteConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Delete'),
+          content: Text('Are you sure you want to delete this material sheet?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the confirmation dialog
+                _deleteMaterialSheet(); // Call delete method
+              },
+              child: Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
   Future<void> _saveChanges() async {
     if (_formKey.currentState?.validate() ?? false) {
       _formKey.currentState?.save();
       try {
         bool success = await MaterialSheetApiService.updateMaterialSheet(_materialSheet);
         if (success) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Material sheet updated successfully')));
-          Navigator.pop(context, true); // Assuming you want to return to the previous screen
+          // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Material sheet updated successfully')));
+
+          // Show success dialog and redirect after 1 second
+          showDialog(
+            context: context,
+            barrierDismissible: false, // Prevent dialog from closing on outside tap
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Update Successful'),
+                content: Text('Redirecting you to the previous page...'),
+              );
+            },
+          );
+
+          // Delay for 1 second
+          Future.delayed(Duration(seconds: 1), () {
+          Navigator.pop(context); // Close the dialog
+          Navigator.pushNamed(context, AppRoutes.materialMonitoringPage); // Navigate to login page
+        }); // Assuming you want to return to the previous screen
         } else {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to update material sheet')));
         }
@@ -214,7 +288,7 @@ class _ViewMonitoringScreenState extends State<ViewMonitoringScreen> {
                             _isEditing = false; // Cancel editing mode
                           });
                         } else {
-                          Navigator.pop(context); // Navigate back
+                          _showDeleteConfirmationDialog(); // Show confirmation dialog for deletion
                         }
                       },
                       child: Text(_isEditing ? 'Cancel' : 'Delete', style: TextStyle(color: Colors.white)),
@@ -239,16 +313,29 @@ class _ViewMonitoringScreenState extends State<ViewMonitoringScreen> {
   Widget _buildTextField(String hint, String initialValue, Function(String) onSave) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextFormField(
-        initialValue: initialValue,
-        decoration: InputDecoration(
-          hintText: hint,
-          filled: true,
-          fillColor: Colors.grey[200],
-        ),
-        onSaved: (value) => onSave(value!),
-        validator: (value) => value!.isEmpty ? 'Please enter ${hint.toLowerCase()}' : null,
-        enabled: _isEditing,
+      child: Row(
+        children: [
+          Expanded(
+            child: TextFormField(
+              initialValue: initialValue,
+              decoration: InputDecoration(
+                hintText: hint,
+                filled: true,
+                fillColor: Colors.grey[200],
+              ),
+              onSaved: (value) => onSave(value!),
+              validator: (value) => value!.isEmpty ? 'Please enter ${hint.toLowerCase()}' : null,
+              enabled: _isEditing,
+            ),
+          ),
+          // if (_isEditing) // Only show delete button during editing mode
+          //   IconButton(
+          //     icon: Icon(Icons.delete),
+          //     onPressed: () {
+          //       _showDeleteConfirmationDialog(); // Show confirmation dialog for deletion
+          //     },
+          //   ),
+        ],
       ),
     );
   }
@@ -256,24 +343,37 @@ class _ViewMonitoringScreenState extends State<ViewMonitoringScreen> {
   Widget _buildDoubleField(String hint, double initialValue, Function(double) onSave) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextFormField(
-        initialValue: initialValue.toString(),
-        decoration: InputDecoration(
-          hintText: hint,
-          filled: true,
-          fillColor: Colors.grey[200],
-        ),
-        onSaved: (value) => onSave(double.parse(value!)),
-        validator: (value) {
-          if (value!.isEmpty) {
-            return 'Please enter ${hint.toLowerCase()}';
-          } else if (double.tryParse(value) == null) {
-            return 'Please enter a valid number';
-          }
-          return null;
-        },
-        enabled: _isEditing,
-        keyboardType: TextInputType.numberWithOptions(decimal: true),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextFormField(
+              initialValue: initialValue.toString(),
+              decoration: InputDecoration(
+                hintText: hint,
+                filled: true,
+                fillColor: Colors.grey[200],
+              ),
+              onSaved: (value) => onSave(double.parse(value!)),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please enter ${hint.toLowerCase()}';
+                } else if (double.tryParse(value) == null) {
+                  return 'Please enter a valid number';
+                }
+                return null;
+              },
+              enabled: _isEditing,
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+            ),
+          ),
+          // if (_isEditing) // Only show delete button during editing mode
+          //   IconButton(
+          //     icon: Icon(Icons.delete),
+          //     onPressed: () {
+          //       _showDeleteConfirmationDialog(); // Show confirmation dialog for deletion
+          //     },
+          //   ),
+        ],
       ),
     );
   }
