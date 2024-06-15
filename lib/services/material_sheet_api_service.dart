@@ -35,4 +35,20 @@ class MaterialSheetApiService {
       throw Exception('Failed to load material sheets');
     }
   }
+
+  // Update an existing material sheet
+  static Future<bool> updateMaterialSheet(MaterialSheet materialSheet) async {
+    final response = await http.put(
+      Uri.parse(apiUrl),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(materialSheet.toJson()),
+    );
+
+    if (response.statusCode == 200) {
+      final responseBody = json.decode(response.body);
+      return responseBody['success'];
+    } else {
+      throw Exception('Failed to update material sheet');
+    }
+  }
 }

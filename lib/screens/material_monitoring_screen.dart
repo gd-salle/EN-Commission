@@ -1,3 +1,4 @@
+// material_monitoring_screen.dart
 import 'package:flutter/material.dart';
 import '../services/material_sheet_api_service.dart';
 import '../models/material_sheet.dart';
@@ -6,6 +7,8 @@ import '../widgets/bottom_design.dart';
 import '../widgets/top_design.dart';
 
 class MaterialMonitoringScreen extends StatefulWidget {
+
+  
   @override
   _MaterialMonitoringScreenState createState() => _MaterialMonitoringScreenState();
 }
@@ -17,6 +20,12 @@ class _MaterialMonitoringScreenState extends State<MaterialMonitoringScreen> {
   void initState() {
     super.initState();
     futureMaterialSheets = MaterialSheetApiService.fetchMaterialSheets();
+  }
+
+  Future<void> _fetchMaterialSheets() async {
+    setState(() {
+      futureMaterialSheets = MaterialSheetApiService.fetchMaterialSheets();
+    });
   }
 
   @override
@@ -65,15 +74,30 @@ class _MaterialMonitoringScreenState extends State<MaterialMonitoringScreen> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search',
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search',
+                          prefixIcon: Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  IconButton(
+                    icon: Icon(Icons.refresh),
+                    onPressed: () {
+                      _fetchMaterialSheets(); // Refresh action
+                    },
+                  ),
+                ],
               ),
             ),
             Expanded(
@@ -94,8 +118,8 @@ class _MaterialMonitoringScreenState extends State<MaterialMonitoringScreen> {
 
                     return Table(
                       border: TableBorder(
-                        horizontalInside: BorderSide(width: 1, color: Colors.grey), // Only horizontal lines
-                        bottom: BorderSide(width: 1, color: Colors.grey), // Bottom line
+                        horizontalInside: BorderSide(width: 1, color: Colors.grey),
+                        bottom: BorderSide(width: 1, color: Colors.grey),
                       ),
                       columnWidths: {
                         0: FlexColumnWidth(1),
@@ -108,19 +132,19 @@ class _MaterialMonitoringScreenState extends State<MaterialMonitoringScreen> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text('Date', style: TextStyle(fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
+                              child: Text('Date', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text('Department', style: TextStyle(fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
+                              child: Text('Department', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text('Laboratory', style: TextStyle(fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
+                              child: Text('Laboratory', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text('Action', style: TextStyle(fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
+                              child: Text('Action', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                             ),
                           ],
                         ),
@@ -128,22 +152,26 @@ class _MaterialMonitoringScreenState extends State<MaterialMonitoringScreen> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(materialSheet.date, style: TextStyle(),textAlign: TextAlign.center,),
+                              child: Text(materialSheet.date, textAlign: TextAlign.center),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(materialSheet.department, style: TextStyle(),textAlign: TextAlign.center,),
+                              child: Text(materialSheet.department, textAlign: TextAlign.center),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(materialSheet.laboratory, style: TextStyle(),textAlign: TextAlign.center,),
+                              child: Text(materialSheet.laboratory, textAlign: TextAlign.center),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Center(
                                 child: IconButton(
                                   onPressed: () {
-                                    // Handle view icon press
+                                    Navigator.pushNamed(
+                                      context,
+                                      AppRoutes.viewMonitoringScreen,
+                                      arguments: materialSheet,
+                                    );
                                   },
                                   icon: Icon(Icons.visibility),
                                   padding: EdgeInsets.zero,
@@ -151,7 +179,7 @@ class _MaterialMonitoringScreenState extends State<MaterialMonitoringScreen> {
                               ),
                             ),
                           ],
-                        )).toList(),
+                        )),
                       ],
                     );
                   },

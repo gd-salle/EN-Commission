@@ -14,7 +14,7 @@ class MaterialTransferSlipFormScreen extends StatefulWidget {
 class _MaterialTransferSlipFormScreenState extends State<MaterialTransferSlipFormScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  late TextEditingController _numberController; // Declare _numberController
+  late TextEditingController _numberController;
 
   DateTime _selectedDate = DateTime.now();
   final _fromController = TextEditingController();

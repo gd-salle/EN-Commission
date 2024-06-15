@@ -1,22 +1,22 @@
 class MaterialSheet {
-  final int? id;
-  final String department;
-  final String laboratory;
-  final String date;
-  final String accountablePerson;
-  final int qty;
-  final String unit;
-  final String description;
-  final String poNumber;
-  final String accountCode;
-  final String accountName;
-  final String tagNumber;
-  final String acquisitionDate;
-  final String location;
-  final double unitPrice;
-  final double total;
-  final String remarks;
-  final String mrNumber;
+  int? id;
+   String department;
+   String laboratory;
+   String date;
+   String accountablePerson;
+   int qty;
+   String unit;
+   String description;
+   String poNumber;
+   String accountCode;
+   String accountName;
+   String tagNumber;
+   String acquisitionDate;
+   String location;
+   double unitPrice;
+   double total;
+   String remarks;
+   String mrNumber;
 
   MaterialSheet({
     this.id,
