@@ -66,7 +66,6 @@ class AppRoutes {
     materialTransferSlipPage: (context) => MaterialTransferSlipFormScreen(),
     requisitionFormScreen:(context) => RequisitionFormScreen(),
     requisitionReceiptScreen:(context) => RequisitionReceiptScreen(),
-    // viewMonitoringScreen:(context) => ViewMonitoringScreen(),
   };
 
 

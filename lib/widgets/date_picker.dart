@@ -26,7 +26,7 @@ class _DatePickerFieldState extends State<DatePickerField> {
       setState(() {
         _selectedDate = pickedDate;
         _selectedDateText = _selectedDate.toString().substring(0, 10);
-        widget.onChanged(_selectedDate!); // Call onChanged with the selected DateTime
+        widget.onChanged(_selectedDate!); 
       });
     }
   }
@@ -37,10 +37,10 @@ class _DatePickerFieldState extends State<DatePickerField> {
       readOnly: true,
       onTap: () => _selectDate(context),
       decoration: InputDecoration(
-        hintText: widget.placeholder, // Use placeholder specified in widget
+        hintText: widget.placeholder, 
         filled: true,
         fillColor: Colors.grey[200],
-        suffixIcon: Icon(Icons.calendar_today), // Calendar icon
+        suffixIcon: Icon(Icons.calendar_today), 
       ),
       controller: TextEditingController(text: _selectedDateText),
     );

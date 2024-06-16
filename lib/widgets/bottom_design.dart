@@ -6,7 +6,7 @@ class BottomDesign extends StatelessWidget {
     return Container(
       height: 100,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center, // Vertically center the column
+        mainAxisAlignment: MainAxisAlignment.center, 
         children: [
           Container(
             height: 10,

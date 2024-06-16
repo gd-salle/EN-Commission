@@ -1,4 +1,4 @@
-// material_monitoring_screen.dart
+
 import 'package:flutter/material.dart';
 import '../services/material_sheet_api_service.dart';
 import '../models/material_sheet.dart';
@@ -91,12 +91,12 @@ class _MaterialMonitoringScreenState extends State<MaterialMonitoringScreen> {
                       ),
                     ),
                   ),
-                  // IconButton(
-                  //   icon: Icon(Icons.refresh),
-                  //   onPressed: () {
-                  //     _fetchMaterialSheets(); // Refresh action
-                  //   },
-                  // ),
+                  
+                  
+                  
+                  
+                  
+                  
                 ],
               ),
             ),
@@ -211,7 +211,7 @@ class _MaterialMonitoringScreenState extends State<MaterialMonitoringScreen> {
                     width: 120,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.pushNamed(context, AppRoutes.landingPage);
                       },
                       child: Text('Cancel',style: TextStyle(color: Colors.white),),
                       style: ElevatedButton.styleFrom(

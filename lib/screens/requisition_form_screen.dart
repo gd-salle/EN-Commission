@@ -3,8 +3,15 @@ import '../widgets/top_design.dart';
 import '../widgets/bottom_design.dart';
 import '../widgets/date_picker.dart';
 import '../routes/app_routes.dart';
+import 'package:flutter/services.dart';
+import 'dart:math';
 
-class RequisitionFormScreen extends StatelessWidget {
+class RequisitionFormScreen extends StatefulWidget {
+  @override
+  _RequisitionFormScreenState createState() => _RequisitionFormScreenState();
+}
+
+class _RequisitionFormScreenState extends State<RequisitionFormScreen> {
   final TextEditingController noController = TextEditingController();
   final TextEditingController departmentController = TextEditingController();
   final TextEditingController qtyController = TextEditingController();
@@ -15,10 +22,21 @@ class RequisitionFormScreen extends StatelessWidget {
   final TextEditingController departmentHeadController = TextEditingController();
   final TextEditingController recipientController = TextEditingController();
   final TextEditingController issuedByController = TextEditingController();
-  
+
   DateTime? selectedDate;
   DateTime? approvedDate;
   DateTime? recipientDate;
+
+  @override
+  void initState() {
+    super.initState();
+    noController.text = generateRandomNumber().toString();
+  }
+
+  int generateRandomNumber() {
+    Random random = Random();
+    return 10000 + random.nextInt(90000); 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +102,7 @@ class RequisitionFormScreen extends StatelessWidget {
                                 flex: 1,
                                 child: TextField(
                                   controller: noController,
+                                  enabled: false,
                                   decoration: InputDecoration(
                                     labelText: 'No:',
                                     border: OutlineInputBorder(
@@ -122,11 +141,15 @@ class RequisitionFormScreen extends StatelessWidget {
                                 child: TextField(
                                   controller: qtyController,
                                   decoration: InputDecoration(
-                                    labelText: 'QTY:',
+                                    labelText: 'Quantity:',
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                   ),
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: <TextInputFormatter>[
+                                    FilteringTextInputFormatter.digitsOnly
+                                  ],
                                 ),
                               ),
                               SizedBox(width: 10),
@@ -290,7 +313,7 @@ class RequisitionFormScreen extends StatelessWidget {
                             width: 120,
                             child: ElevatedButton(
                               onPressed: () {
-                                Navigator.pop(context);
+                                Navigator.pushNamed(context, AppRoutes.landingPage);
                               },
                               child: Text('Cancel', style: TextStyle(color: Colors.white)),
                               style: ElevatedButton.styleFrom(

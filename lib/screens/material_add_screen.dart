@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../widgets/top_design.dart';
 import '../widgets/bottom_design.dart';
 import '../widgets/date_picker.dart';
 import '../models/material_sheet.dart';
 import '../services/material_sheet_api_service.dart';
 import '../routes/app_routes.dart';
+
 class MaterialAddScreen extends StatefulWidget {
   @override
   _MaterialAddScreenState createState() => _MaterialAddScreenState();
@@ -50,7 +52,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
     super.dispose();
   }
 
-  Future<void> _addMaterialSheet() async {
+    Future<void> _addMaterialSheet() async {
   final materialSheet = MaterialSheet(
     department: _departmentController.text,
     laboratory: _laboratoryController.text,
@@ -70,19 +72,41 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
     remarks: _remarksController.text,
     mrNumber: _mrNumberController.text,
   );
-  
+
   try {
     bool success = await MaterialSheetApiService.addMaterialSheet(materialSheet);
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Material sheet added successfully')));
+      
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Success'),
+            content: Text('Successfully added new record. Redirecting to the previous page...'),
+            
+            
+            
+            
+            
+            
+            
+            
+            
+          );
+        },
+      );
+
+      
+      await Future.delayed(Duration(seconds: 1));
       Navigator.pushNamedAndRemoveUntil(context, AppRoutes.materialMonitoringPage, (route) => false);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add material sheet')));
     }
   } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error adding material sheet: $e')));
   }
 }
+
 
 
   @override
@@ -156,7 +180,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     TextField(
                       controller: _departmentController,
                       decoration: InputDecoration(
-                        hintText: 'Department',
+                        labelText: 'Department',
                         filled: true,
                         fillColor: Colors.grey[200],
                       ),
@@ -165,7 +189,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     TextField(
                       controller: _laboratoryController,
                       decoration: InputDecoration(
-                        hintText: 'Laboratory',
+                        labelText: 'Laboratory',
                         filled: true,
                         fillColor: Colors.grey[200],
                       ),
@@ -183,7 +207,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     TextField(
                       controller: _accountablePersonController,
                       decoration: InputDecoration(
-                        hintText: 'Accountable Person',
+                        labelText: 'Accountable Person',
                         filled: true,
                         fillColor: Colors.grey[200],
                       ),
@@ -195,10 +219,14 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                           child: TextField(
                             controller: _qtyController,
                             decoration: InputDecoration(
-                              hintText: 'QTY',
+                              labelText: 'Quantity',
                               filled: true,
                               fillColor: Colors.grey[200],
                             ),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
                           ),
                         ),
                         SizedBox(width: 8),
@@ -206,7 +234,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                           child: TextField(
                             controller: _unitController,
                             decoration: InputDecoration(
-                              hintText: 'UNIT',
+                              labelText: 'UNIT',
                               filled: true,
                               fillColor: Colors.grey[200],
                             ),
@@ -218,7 +246,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     TextField(
                       controller: _descriptionController,
                       decoration: InputDecoration(
-                        hintText: 'Description',
+                        labelText: 'Description',
                         filled: true,
                         fillColor: Colors.grey[200],
                       ),
@@ -227,25 +255,33 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     TextField(
                       controller: _poNumberController,
                       decoration: InputDecoration(
-                        hintText: 'P.O Number',
+                        labelText: 'P.O Number',
                         filled: true,
                         fillColor: Colors.grey[200],
                       ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
                     ),
                     SizedBox(height: 8),
                     TextField(
                       controller: _accountCodeController,
                       decoration: InputDecoration(
-                        hintText: 'Account Code',
+                        labelText: 'Account Code',
                         filled: true,
                         fillColor: Colors.grey[200],
                       ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
                     ),
                     SizedBox(height: 8),
                     TextField(
                       controller: _accountNameController,
                       decoration: InputDecoration(
-                        hintText: 'Account Name',
+                        labelText: 'Account Name',
                         filled: true,
                         fillColor: Colors.grey[200],
                       ),
@@ -254,10 +290,14 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     TextField(
                       controller: _tagNumberController,
                       decoration: InputDecoration(
-                        hintText: 'Tag Number',
+                        labelText: 'Tag Number',
                         filled: true,
                         fillColor: Colors.grey[200],
                       ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
                     ),
                     SizedBox(height: 8),
                     DatePickerField(
@@ -272,7 +312,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     TextField(
                       controller: _locationController,
                       decoration: InputDecoration(
-                        hintText: 'Location',
+                        labelText: 'Location',
                         filled: true,
                         fillColor: Colors.grey[200],
                       ),
@@ -281,25 +321,27 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     TextField(
                       controller: _unitPriceController,
                       decoration: InputDecoration(
-                        hintText: 'Unit Price',
+                        labelText: 'Unit Price',
                         filled: true,
                         fillColor: Colors.grey[200],
                       ),
+                      keyboardType: TextInputType.numberWithOptions(decimal: true),
                     ),
                     SizedBox(height: 8),
                     TextField(
                       controller: _totalController,
                       decoration: InputDecoration(
-                        hintText: 'Total',
+                        labelText: 'Total',
                         filled: true,
                         fillColor: Colors.grey[200],
                       ),
+                      keyboardType: TextInputType.numberWithOptions(decimal: true),
                     ),
                     SizedBox(height: 8),
                     TextField(
                       controller: _remarksController,
                       decoration: InputDecoration(
-                        hintText: 'Remarks',
+                        labelText: 'Remarks',
                         filled: true,
                         fillColor: Colors.grey[200],
                       ),
@@ -308,10 +350,14 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     TextField(
                       controller: _mrNumberController,
                       decoration: InputDecoration(
-                        hintText: 'MR#',
+                        labelText: 'MR#',
                         filled: true,
                         fillColor: Colors.grey[200],
                       ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
                     ),
                   ],
                 ),
@@ -340,7 +386,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                     width: 120,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.pushNamed(context, AppRoutes.materialMonitoringScreen);
                       },
                       child: Text('Cancel', style: TextStyle(color: Colors.white)),
                       style: ElevatedButton.styleFrom(

@@ -5,6 +5,7 @@ import '../widgets/bottom_design.dart';
 import '../widgets/date_picker.dart';
 import '../models/material_transfer_slip.dart';
 import '../routes/app_routes.dart';
+import 'package:flutter/services.dart';
 
 class MaterialTransferSlipFormScreen extends StatefulWidget {
   @override
@@ -35,10 +36,10 @@ class _MaterialTransferSlipFormScreenState extends State<MaterialTransferSlipFor
     _numberController = TextEditingController(text: generateRandomNumber().toString());
   }
 
-  // Function to generate a random 5-digit number
+  
   int generateRandomNumber() {
     Random random = Random();
-    return 10000 + random.nextInt(90000); // Generate a random 5-digit number
+    return 10000 + random.nextInt(90000); 
   }
 
   @override
@@ -102,6 +103,7 @@ class _MaterialTransferSlipFormScreenState extends State<MaterialTransferSlipFor
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter a number';
                                 }
+                                
                                 return null;
                               },
                             ),
@@ -161,8 +163,12 @@ class _MaterialTransferSlipFormScreenState extends State<MaterialTransferSlipFor
                                 labelText: 'Quantity:',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                ),
+                                ), 
                               ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter a quantity';
@@ -352,7 +358,7 @@ class _MaterialTransferSlipFormScreenState extends State<MaterialTransferSlipFor
                               width: 120,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  Navigator.pop(context);
+                                  Navigator.pushNamed(context, AppRoutes.landingPage);
                                 },
                                 child: Text('Cancel', style: TextStyle(color: Colors.white)),
                                 style: ElevatedButton.styleFrom(

@@ -14,7 +14,7 @@ class LogoutConfirmationDialog extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            // Perform logout action here
+            
             Navigator.of(context).pop(true);
             Navigator.pushNamed(context, AppRoutes.loginPage);
           },

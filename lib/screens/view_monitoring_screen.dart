@@ -4,6 +4,8 @@ import '../services/material_sheet_api_service.dart';
 import '../widgets/bottom_design.dart';
 import '../widgets/top_design.dart';
 import '../routes/app_routes.dart';
+import 'package:flutter/services.dart';
+
 class ViewMonitoringScreen extends StatefulWidget {
   final MaterialSheet materialSheet;
 
@@ -28,10 +30,9 @@ class _ViewMonitoringScreenState extends State<ViewMonitoringScreen> {
     try {
       bool success = await MaterialSheetApiService.deleteMaterialSheet(_materialSheet.id!);
       if (success) {
-        // Show success dialog and redirect after 1 second
         showDialog(
           context: context,
-          barrierDismissible: false, // Prevent dialog from closing on outside tap
+          barrierDismissible: false,
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text('Deletion Successful'),
@@ -40,11 +41,10 @@ class _ViewMonitoringScreenState extends State<ViewMonitoringScreen> {
           },
         );
 
-        // Delay for 1 second
         await Future.delayed(Duration(seconds: 1));
 
-        Navigator.pop(context); // Close the dialog
-        Navigator.pushNamed(context, AppRoutes.materialMonitoringPage); // Navigate to previous screen
+        Navigator.pop(context);
+        Navigator.pushNamed(context, AppRoutes.materialMonitoringPage);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to delete material sheet')));
       }
@@ -52,7 +52,7 @@ class _ViewMonitoringScreenState extends State<ViewMonitoringScreen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
-  
+
   void _showDeleteConfirmationDialog() {
     showDialog(
       context: context,
@@ -69,8 +69,8 @@ class _ViewMonitoringScreenState extends State<ViewMonitoringScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the confirmation dialog
-                _deleteMaterialSheet(); // Call delete method
+                Navigator.of(context).pop();
+                _deleteMaterialSheet();
               },
               child: Text('Confirm'),
             ),
@@ -80,19 +80,15 @@ class _ViewMonitoringScreenState extends State<ViewMonitoringScreen> {
     );
   }
 
-
   Future<void> _saveChanges() async {
     if (_formKey.currentState?.validate() ?? false) {
       _formKey.currentState?.save();
       try {
         bool success = await MaterialSheetApiService.updateMaterialSheet(_materialSheet);
         if (success) {
-          // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Material sheet updated successfully')));
-
-          // Show success dialog and redirect after 1 second
           showDialog(
             context: context,
-            barrierDismissible: false, // Prevent dialog from closing on outside tap
+            barrierDismissible: false,
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text('Update Successful'),
@@ -101,11 +97,10 @@ class _ViewMonitoringScreenState extends State<ViewMonitoringScreen> {
             },
           );
 
-          // Delay for 1 second
-          Future.delayed(Duration(seconds: 1), () {
-          Navigator.pop(context); // Close the dialog
-          Navigator.pushNamed(context, AppRoutes.materialMonitoringPage); // Navigate to login page
-        }); // Assuming you want to return to the previous screen
+          await Future.delayed(Duration(seconds: 1));
+
+          Navigator.pop(context);
+          Navigator.pushNamed(context, AppRoutes.materialMonitoringPage);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to update material sheet')));
         }
@@ -230,22 +225,22 @@ class _ViewMonitoringScreenState extends State<ViewMonitoringScreen> {
                       _buildTextField('Accountable Person', _materialSheet.accountablePerson, (value) => _materialSheet.accountablePerson = value),
                       Row(
                         children: [
-                          Expanded(child: _buildTextField('QTY', _materialSheet.qty.toString(), (value) => _materialSheet.qty = int.parse(value))),
+                          Expanded(child: _buildIntField('Quantity', _materialSheet.qty.toString(), (value) => _materialSheet.qty = int.parse(value))),
                           SizedBox(width: 8),
                           Expanded(child: _buildTextField('UNIT', _materialSheet.unit, (value) => _materialSheet.unit = value)),
                         ],
                       ),
                       _buildTextField('Description', _materialSheet.description, (value) => _materialSheet.description = value),
-                      _buildTextField('P.O Number', _materialSheet.poNumber, (value) => _materialSheet.poNumber = value),
-                      _buildTextField('Account Code', _materialSheet.accountCode, (value) => _materialSheet.accountCode = value),
+                      _buildIntField('P.O Number', _materialSheet.poNumber, (value) => _materialSheet.poNumber = value),
+                      _buildIntField('Account Code', _materialSheet.accountCode, (value) => _materialSheet.accountCode = value),
                       _buildTextField('Account Name', _materialSheet.accountName, (value) => _materialSheet.accountName = value),
-                      _buildTextField('Tag Number', _materialSheet.tagNumber, (value) => _materialSheet.tagNumber = value),
+                      _buildIntField('Tag Number', _materialSheet.tagNumber, (value) => _materialSheet.tagNumber = value),
                       _buildTextField('Acquisition Date', _materialSheet.acquisitionDate, (value) => _materialSheet.acquisitionDate = value),
                       _buildTextField('Location', _materialSheet.location, (value) => _materialSheet.location = value),
                       _buildDoubleField('Unit Price', _materialSheet.unitPrice, (value) => _materialSheet.unitPrice = value),
                       _buildDoubleField('Total', _materialSheet.total, (value) => _materialSheet.total = value),
                       _buildTextField('Remarks', _materialSheet.remarks, (value) => _materialSheet.remarks = value),
-                      _buildTextField('MR#', _materialSheet.mrNumber, (value) => _materialSheet.mrNumber = value),
+                      _buildIntField('MR#', _materialSheet.mrNumber, (value) => _materialSheet.mrNumber = value),
                     ],
                   ),
                 ),
@@ -265,13 +260,13 @@ class _ViewMonitoringScreenState extends State<ViewMonitoringScreen> {
                           _showConfirmationDialog();
                         } else {
                           setState(() {
-                            _isEditing = !_isEditing; // Toggle editing mode
+                            _isEditing = !_isEditing;
                           });
                         }
                       },
                       child: Text(_isEditing ? 'Confirm' : 'Modify', style: TextStyle(color: Colors.white)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _isEditing ? Colors.green : Colors.green, // Change color dynamically
+                        backgroundColor: _isEditing ? Colors.green : Colors.green,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
@@ -285,15 +280,15 @@ class _ViewMonitoringScreenState extends State<ViewMonitoringScreen> {
                       onPressed: () {
                         if (_isEditing) {
                           setState(() {
-                            _isEditing = false; // Cancel editing mode
+                            _isEditing = false;
                           });
                         } else {
-                          _showDeleteConfirmationDialog(); // Show confirmation dialog for deletion
+                          _showDeleteConfirmationDialog();
                         }
                       },
                       child: Text(_isEditing ? 'Cancel' : 'Delete', style: TextStyle(color: Colors.white)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _isEditing ? Colors.red : Colors.red, // Change color dynamically
+                        backgroundColor: _isEditing ? Colors.red : Colors.red,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
@@ -319,7 +314,7 @@ class _ViewMonitoringScreenState extends State<ViewMonitoringScreen> {
             child: TextFormField(
               initialValue: initialValue,
               decoration: InputDecoration(
-                hintText: hint,
+                labelText: hint,
                 filled: true,
                 fillColor: Colors.grey[200],
               ),
@@ -328,13 +323,31 @@ class _ViewMonitoringScreenState extends State<ViewMonitoringScreen> {
               enabled: _isEditing,
             ),
           ),
-          // if (_isEditing) // Only show delete button during editing mode
-          //   IconButton(
-          //     icon: Icon(Icons.delete),
-          //     onPressed: () {
-          //       _showDeleteConfirmationDialog(); // Show confirmation dialog for deletion
-          //     },
-          //   ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIntField(String hint, String initialValue, Function(String) onSave) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextFormField(
+              initialValue: initialValue,
+              decoration: InputDecoration(
+                labelText: hint,
+                filled: true,
+                fillColor: Colors.grey[200],
+              ),
+              onSaved: (value) => onSave(value!),
+              validator: (value) => value!.isEmpty ? 'Please enter ${hint.toLowerCase()}' : null,
+              enabled: _isEditing,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            ),
+          ),
         ],
       ),
     );
@@ -349,13 +362,19 @@ class _ViewMonitoringScreenState extends State<ViewMonitoringScreen> {
             child: TextFormField(
               initialValue: initialValue.toString(),
               decoration: InputDecoration(
-                hintText: hint,
+                labelText: hint,
                 filled: true,
                 fillColor: Colors.grey[200],
               ),
-              onSaved: (value) => onSave(double.parse(value!)),
+              onSaved: (value) {
+                if (value != null && value.isNotEmpty) {
+                  onSave(double.parse(value));
+                } else {
+                  onSave(initialValue);
+                }
+              },
               validator: (value) {
-                if (value!.isEmpty) {
+                if (value == null || value.isEmpty) {
                   return 'Please enter ${hint.toLowerCase()}';
                 } else if (double.tryParse(value) == null) {
                   return 'Please enter a valid number';
@@ -364,15 +383,9 @@ class _ViewMonitoringScreenState extends State<ViewMonitoringScreen> {
               },
               enabled: _isEditing,
               keyboardType: TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))],
             ),
           ),
-          // if (_isEditing) // Only show delete button during editing mode
-          //   IconButton(
-          //     icon: Icon(Icons.delete),
-          //     onPressed: () {
-          //       _showDeleteConfirmationDialog(); // Show confirmation dialog for deletion
-          //     },
-          //   ),
         ],
       ),
     );

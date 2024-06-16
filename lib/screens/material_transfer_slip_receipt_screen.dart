@@ -6,6 +6,7 @@ import 'dart:ui' as ui;
 import '../widgets/top_design.dart';
 import '../widgets/bottom_design.dart';
 import '../models/material_transfer_slip.dart';
+import '../routes/app_routes.dart';
 
 final GlobalKey containerKey = GlobalKey();
 
@@ -15,14 +16,13 @@ class MaterialTransferSlipReceiptScreen extends StatelessWidget {
   const MaterialTransferSlipReceiptScreen({Key? key, required this.slip}) : super(key: key);
 
   Future<void> _captureAndSaveScreenshot() async {
-    // Capture the container as an image
     RenderRepaintBoundary boundary = containerKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-    ui.Image image = await boundary.toImage(pixelRatio: 3.0); // Use higher pixel ratio for better quality
+    ui.Image image = await boundary.toImage(pixelRatio: 3.0); 
     ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
     if (byteData != null) {
       Uint8List pngBytes = byteData.buffer.asUint8List();
-      final String serverUrl = 'http://10.0.2.2/property_REST_API/save_screenshot.php'; // Replace with your Laragon server URL
+      final String serverUrl = 'http://10.0.2.2/property_REST_API/save_screenshot.php'; 
 
       var response = await http.post(Uri.parse(serverUrl), body: pngBytes);
       if (response.statusCode == 200) {
@@ -152,7 +152,7 @@ class MaterialTransferSlipReceiptScreen extends StatelessWidget {
                     width: 120,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.pushNamed(context, AppRoutes.materialTransferSlipFormScreen);
                       },
                       child: Text(
                         'Cancel',

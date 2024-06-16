@@ -1,4 +1,4 @@
-// lib/widgets/account_type_dropdown.dart
+
 import 'package:flutter/material.dart';
 import '../models/account_type.dart';
 import '../services/registration_api_service.dart';
@@ -6,13 +6,13 @@ import '../services/registration_api_service.dart';
 class AccountTypeDropdown extends StatefulWidget {
   final String? initialValue;
   final ValueChanged<String?>? onChanged;
-  final List<AccountType> accountTypes; // Define accountTypes here
+  final List<AccountType> accountTypes; 
 
   const AccountTypeDropdown({
     Key? key,
     required this.initialValue,
     required this.onChanged,
-    required this.accountTypes, // Include accountTypes in the constructor
+    required this.accountTypes, 
   }) : super(key: key);
 
   @override

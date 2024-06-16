@@ -1,4 +1,4 @@
-// lib/screens/login_screen.dart
+
 import 'package:flutter/material.dart';
 import '../widgets/account_type_dropdown.dart';
 import '../widgets/top_design.dart';
@@ -6,7 +6,7 @@ import '../widgets/bottom_design.dart';
 import '../routes/app_routes.dart';
 import '../models/account_type.dart';
 import '../services/registration_api_service.dart';
-import '../services/login_api_service.dart'; // Import the LoginApiService
+import '../services/login_api_service.dart'; 
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -14,7 +14,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>(); // Key for the form
+  final _formKey = GlobalKey<FormState>(); 
   String? _username;
   String? _password;
   String? _selectedAccountType;
@@ -102,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Form(
-                  key: _formKey, // Assigning the form key
+                  key: _formKey, 
                   child: Column(
                     children: [
                       AccountTypeDropdown(
@@ -112,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             _selectedAccountType = value;
                           });
                         },
-                        accountTypes: _accountTypes, // Pass accountTypes here
+                        accountTypes: _accountTypes, 
                       ),
                       SizedBox(height: 10),
                       TextFormField(
@@ -143,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       SizedBox(height: 20),
                       ElevatedButton(
-                        onPressed: _loginUser, // Call _loginUser on press
+                        onPressed: _loginUser, 
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
                           padding: EdgeInsets.symmetric(

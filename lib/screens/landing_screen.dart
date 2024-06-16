@@ -14,8 +14,7 @@ class LandingPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TopDesign(),
-              SizedBox(height: 20),
-              // Logo and Header
+              SizedBox(height: 20),       
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
@@ -47,7 +46,7 @@ class LandingPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-              // Property Office Header
+              
               Container(
                 color: Colors.grey[300],
                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -73,7 +72,7 @@ class LandingPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-              // Mission Section
+              
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Column(
@@ -133,7 +132,7 @@ class LandingPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-              // Bottom Design
+              
               BottomDesign(),
             ],
           ),

@@ -1,4 +1,3 @@
-// lib/models/material_transfer_slip.dart
 class MaterialTransferSlip {
   final String number;
   final DateTime date;

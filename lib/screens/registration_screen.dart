@@ -1,4 +1,4 @@
-// lib/screens/registration_screen.dart
+
 import 'package:flutter/material.dart';
 import '../routes/app_routes.dart';
 import '../widgets/account_type_dropdown.dart';
@@ -15,7 +15,7 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-  final _formKey = GlobalKey<FormState>(); // Key for the form
+  final _formKey = GlobalKey<FormState>(); 
   String? _username;
   String? _email;
   String? _password;
@@ -40,7 +40,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         _accountTypes = accountTypes;
       });
     } catch (e) {
-      // Handle the error, e.g., by showing a dialog
+      
       _showErrorDialog(context, 'Failed to load account types. Please try again.');
     } finally {
       setState(() {
@@ -76,7 +76,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24.0),
                       child: Form(
-                        key: _formKey, // Assigning the form key
+                        key: _formKey, 
                         child: Column(
                           children: [
                             AccountTypeDropdown(
@@ -86,7 +86,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   _selectedAccountType = value;
                                 });
                               },
-                              accountTypes: _accountTypes, // Pass accountTypes here
+                              accountTypes: _accountTypes, 
                             ),
                             SizedBox(height: 10),
                             CustomTextField(
@@ -161,10 +161,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
                                   _formKey.currentState!.save();
-                                  print('Form is valid, proceeding to register');  // Debug log
+                                  print('Form is valid, proceeding to register');  
                                   _registerUser();
                                 } else {
-                                  print('Form is invalid');  // Debug log
+                                  print('Form is invalid');  
                                 }
                               },
                               style: ElevatedButton.styleFrom(
@@ -228,7 +228,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     try {
       final selectedAccountType = _accountTypes.firstWhere((type) => type.name == _selectedAccountType);
       final userAccount = UserAccount(
-        id: 0, // ID will be assigned by the database
+        id: 0, 
         accountTypeId: selectedAccountType.id,
         username: _username!,
         email: _email!,
@@ -258,8 +258,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     );
 
     Future.delayed(Duration(seconds: 2), () {
-      Navigator.pop(context); // Close the dialog
-      Navigator.pushNamed(context, AppRoutes.loginPage); // Navigate to login page
+      Navigator.pop(context); 
+      Navigator.pushNamed(context, AppRoutes.loginPage); 
     });
   }
 

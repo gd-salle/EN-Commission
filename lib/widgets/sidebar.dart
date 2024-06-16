@@ -13,7 +13,7 @@ class Sidebar extends StatelessWidget {
         shrinkWrap: true,
         children: [
           SizedBox(height: 150),
-          // Menu Items
+          
           Divider(thickness: 1),
           ListTile(
             leading: Icon(Icons.home_outlined),
@@ -72,7 +72,7 @@ class Sidebar extends StatelessWidget {
           ),
           Divider(thickness: 1),
           ListTile(
-            leading: Icon(Icons.exit_to_app), // Add logout icon
+            leading: Icon(Icons.exit_to_app), 
             title: Text(
               'Sign Out',
               style: TextStyle(fontSize: 18, color: Colors.black),

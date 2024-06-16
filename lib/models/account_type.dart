@@ -1,4 +1,3 @@
-// lib/model/account_type.dart
 class AccountType {
   final int id;
   final String name;
