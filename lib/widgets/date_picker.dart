@@ -1,16 +1,41 @@
 import 'package:flutter/material.dart';
 
-class DatePickerField extends StatefulWidget {
+class DatePickerField extends FormField<DateTime> {
+  DatePickerField({
+    Key? key,
+    required ValueChanged<DateTime> onChanged,
+    required String placeholder,
+    FormFieldValidator<DateTime>? validator,
+  }) : super(
+          key: key,
+          validator: validator,
+          builder: (FormFieldState<DateTime> state) {
+            return _DatePickerFieldContent(
+              state: state,
+              onChanged: onChanged,
+              placeholder: placeholder,
+            );
+          },
+        );
+}
+
+class _DatePickerFieldContent extends StatefulWidget {
+  final FormFieldState<DateTime> state;
   final ValueChanged<DateTime> onChanged;
   final String placeholder;
 
-  const DatePickerField({Key? key, required this.onChanged, required this.placeholder}) : super(key: key);
+  const _DatePickerFieldContent({
+    Key? key,
+    required this.state,
+    required this.onChanged,
+    required this.placeholder,
+  }) : super(key: key);
 
   @override
-  _DatePickerFieldState createState() => _DatePickerFieldState();
+  _DatePickerFieldContentState createState() => _DatePickerFieldContentState();
 }
 
-class _DatePickerFieldState extends State<DatePickerField> {
+class _DatePickerFieldContentState extends State<_DatePickerFieldContent> {
   String _selectedDateText = '';
   DateTime? _selectedDate;
 
@@ -26,23 +51,29 @@ class _DatePickerFieldState extends State<DatePickerField> {
       setState(() {
         _selectedDate = pickedDate;
         _selectedDateText = _selectedDate.toString().substring(0, 10);
-        widget.onChanged(_selectedDate!); 
+        widget.state.didChange(_selectedDate);
+        widget.onChanged(_selectedDate!);
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      readOnly: true,
-      onTap: () => _selectDate(context),
-      decoration: InputDecoration(
-        hintText: widget.placeholder, 
-        filled: true,
-        fillColor: Colors.grey[200],
-        suffixIcon: Icon(Icons.calendar_today), 
-      ),
-      controller: TextEditingController(text: _selectedDateText),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          readOnly: true,
+          onTap: () => _selectDate(context),
+          decoration: InputDecoration(
+            labelText: widget.placeholder,
+            border: OutlineInputBorder(),
+            suffixIcon: Icon(Icons.calendar_today),
+            errorText: widget.state.errorText,
+          ),
+          controller: TextEditingController(text: _selectedDateText),
+        ),
+      ],
     );
   }
 }

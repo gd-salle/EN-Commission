@@ -42,6 +42,12 @@ class _MaterialTransferSlipFormScreenState extends State<MaterialTransferSlipFor
     return 10000 + random.nextInt(90000); 
   }
 
+  String? _dateValidator(DateTime? date) {
+    if (date == null) {
+      return 'Please select a date';
+    }
+    return null;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,6 +122,7 @@ class _MaterialTransferSlipFormScreenState extends State<MaterialTransferSlipFor
                                 _selectedDate = date;
                               },
                               placeholder: 'Date:',
+                              validator: _dateValidator,
                             ),
                           ),
                         ],

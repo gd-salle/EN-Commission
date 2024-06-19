@@ -12,6 +12,8 @@ class RequisitionFormScreen extends StatefulWidget {
 }
 
 class _RequisitionFormScreenState extends State<RequisitionFormScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   final TextEditingController noController = TextEditingController();
   final TextEditingController departmentController = TextEditingController();
   final TextEditingController qtyController = TextEditingController();
@@ -38,6 +40,12 @@ class _RequisitionFormScreenState extends State<RequisitionFormScreen> {
     return 10000 + random.nextInt(90000); 
   }
 
+  String? _dateValidator(DateTime? date) {
+    if (date == null) {
+      return 'Please select a date';
+    }
+    return null;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,286 +56,332 @@ class _RequisitionFormScreenState extends State<RequisitionFormScreen> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: ListView(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Row(
+                child: Form(
+                  key: _formKey,
+                  child: ListView(
+                    children: [
+                      // Your existing form fields with TextFormField
+                      // No and Date fields
+                      Row(
                         children: [
-                          Image.asset(
-                            'assets/images/unc_logo.png',
-                            height: 50,
+                          Expanded(
+                            flex: 1,
+                            child: TextFormField(
+                              controller: noController,
+                              enabled: false,
+                              decoration: InputDecoration(
+                                labelText: 'No:',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              ),
+                            ),
                           ),
                           SizedBox(width: 10),
                           Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'UNIVERSITY OF NUEVA CACERES',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w900,
-                                  ),
+                            flex: 1,
+                            child: DatePickerField(
+                              onChanged: (date) {
+                                setState(() {
+                                  selectedDate = date;
+                                });
+                              },
+                              placeholder: 'Date:',
+                              validator: _dateValidator,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+
+                      // Department field
+                      TextFormField(
+                        controller: departmentController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter department';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Department:',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+
+                      // Quantity and Unit fields
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: TextFormField(
+                              controller: qtyController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter quantity';
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                labelText: 'Quantity:',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
                                 ),
-                                Text(
-                                  'Requisition Form',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                Text(
-                                  'Property Management Office',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                ),
+                              ),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.digitsOnly
                               ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Container(
-                      padding: EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: TextField(
-                                  controller: noController,
-                                  enabled: false,
-                                  decoration: InputDecoration(
-                                    labelText: 'No:',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                  ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            flex: 1,
+                            child: TextFormField(
+                              controller: unitController,
+                              decoration: InputDecoration(
+                                labelText: 'Unit:',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
                                 ),
                               ),
-                              SizedBox(width: 10),
-                              Expanded(
-                                flex: 1,
-                                child: DatePickerField(
-                                  onChanged: (date) {
-                                    selectedDate = date;
-                                  },
-                                  placeholder: 'Date:',
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          TextField(
-                            controller: departmentController,
-                            decoration: InputDecoration(
-                              labelText: 'Department:',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: TextField(
-                                  controller: qtyController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Quantity:',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                  ),
-                                  keyboardType: TextInputType.number,
-                                  inputFormatters: <TextInputFormatter>[
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
-                                ),
-                              ),
-                              SizedBox(width: 10),
-                              Expanded(
-                                flex: 1,
-                                child: TextField(
-                                  controller: unitController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Unit:',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          TextField(
-                            controller: itemsController,
-                            maxLines: 3,
-                            decoration: InputDecoration(
-                              labelText: 'Items:',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          TextField(
-                            controller: purposeController,
-                            decoration: InputDecoration(
-                              labelText: 'Purpose:',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          TextField(
-                            controller: requisitionByController,
-                            decoration: InputDecoration(
-                              labelText: 'Requisition By:',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          Text(
-                            'Recommended by:',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: departmentHeadController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Department Head',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 10),
-                              Expanded(
-                                child: DatePickerField(
-                                  onChanged: (date) {
-                                    approvedDate = date;
-                                  },
-                                  placeholder: 'Approved Date',
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: recipientController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Recipient',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 10),
-                              Expanded(
-                                child: DatePickerField(
-                                  onChanged: (date) {
-                                    recipientDate = date;
-                                  },
-                                  placeholder: 'Recipient Date',
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          TextField(
-                            controller: issuedByController,
-                            decoration: InputDecoration(
-                              labelText: 'Issued by',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          SizedBox(
-                            width: 120,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  AppRoutes.requisitionReceiptScreen,
-                                  arguments: {
-                                    'no': noController.text,
-                                    'selectedDate': selectedDate,
-                                    'department': departmentController.text,
-                                    'qty': qtyController.text,
-                                    'unit': unitController.text,
-                                    'items': itemsController.text,
-                                    'purpose': purposeController.text,
-                                    'requisitionBy': requisitionByController.text,
-                                    'departmentHead': departmentHeadController.text,
-                                    'approvedDate': approvedDate,
-                                    'recipient': recipientController.text,
-                                    'recipientDate': recipientDate,
-                                    'issuedBy': issuedByController.text,
-                                  },
-                                );
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter unit';
+                                }
+                                return null;
                               },
-                              child: Text('Print', style: TextStyle(color: Colors.white)),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.green,
-                                shape: RoundedRectangleBorder(
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+
+                      // Items field
+                      TextFormField(
+                        controller: itemsController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter items';
+                          }
+                          return null;
+                        },
+                        maxLines: 3,
+                        decoration: InputDecoration(
+                          labelText: 'Items:',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+
+                      // Purpose field
+                      TextFormField(
+                        controller: purposeController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter purpose';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Purpose:',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+
+                      // Requisition By field
+                      TextFormField(
+                        controller: requisitionByController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter requisition by';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Requisition By:',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+
+                      // Recommended by section
+                      Text(
+                        'Recommended by:',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: departmentHeadController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter department head';
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                labelText: 'Department Head',
+                                border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                               ),
                             ),
                           ),
                           SizedBox(width: 10),
-                          SizedBox(
-                            width: 120,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, AppRoutes.landingPage);
+                          Expanded(
+                            child: DatePickerField(
+                              onChanged: (date) {
+                                setState(() {
+                                  approvedDate = date;
+                                });
                               },
-                              child: Text('Cancel', style: TextStyle(color: Colors.white)),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                              ),
+                              placeholder: 'Approved Date',
+                              validator: (value) {
+                              if (value == null) {
+                                return 'Please select approved date';
+                              }
+                              return null;
+                            },
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: recipientController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter recipient';
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                labelText: 'Recipient',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: DatePickerField(
+                              onChanged: (date) {
+                                setState(() {
+                                  recipientDate = date;
+                                });
+                              },
+                              placeholder: 'Recipient Date',
+                              validator: (value) {
+                              if (value == null) {
+                                return 'Please select recipient date';
+                              }
+                              return null;
+                            },
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+
+                      // Issued By field
+                      TextFormField(
+                        controller: issuedByController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter issued by';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Issued by',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+
+                      // Buttons
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            SizedBox(
+                              width: 120,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    Navigator.pushNamed(
+                                      context,
+                                      AppRoutes.requisitionReceiptScreen,
+                                      arguments: {
+                                        'selectedDate': selectedDate,
+                                        'department': departmentController.text,
+                                        'qty': qtyController.text,
+                                        'unit': unitController.text,
+                                        'items': itemsController.text,
+                                        'purpose': purposeController.text,
+                                        'requisitionBy': requisitionByController.text,
+                                        'departmentHead': departmentHeadController.text,
+                                        'approvedDate': approvedDate,
+                                        'recipient': recipientController.text,
+                                        'recipientDate': recipientDate,
+                                        'issuedBy': issuedByController.text,
+                                      },
+                                    );
+                                  }
+                                },
+                                child: Text('Print', style: TextStyle(color: Colors.white)),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            SizedBox(
+                              width: 120,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(context, AppRoutes.landingPage);
+                                },
+                                child: Text('Cancel', style: TextStyle(color: Colors.white)),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -75,39 +75,35 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
 
   try {
     bool success = await MaterialSheetApiService.addMaterialSheet(materialSheet);
-    if (success) {
-      
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Success'),
-            content: Text('Successfully added new record. Redirecting to the previous page...'),
-            
-            
-            
-            
-            
-            
-            
-            
-            
-          );
-        },
-      );
+      if (success) {
+        
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Success'),
+              content: Text('Successfully added new record. Redirecting to the previous page...'),
+            );
+          },
+        );
 
-      
-      await Future.delayed(Duration(seconds: 1));
-      Navigator.pushNamedAndRemoveUntil(context, AppRoutes.materialMonitoringPage, (route) => false);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add material sheet')));
+        
+        await Future.delayed(Duration(seconds: 1));
+        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.materialMonitoringPage, (route) => false);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add material sheet')));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error adding material sheet: $e')));
     }
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error adding material sheet: $e')));
   }
-}
 
-
+  String? _dateValidator(DateTime? date) {
+    if (date == null) {
+      return 'Please select a date';
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -202,6 +198,7 @@ class _MaterialAddScreenState extends State<MaterialAddScreen> {
                         });
                       },
                       placeholder: 'Date',
+                      validator: _dateValidator,
                     ),
                     SizedBox(height: 8),
                     TextField(
